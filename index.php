@@ -17,7 +17,7 @@ $c['config'] = function ($c) {
 };
 
 $c['db'] = function ($c) {
-  $config = $c->config;
+    $config = $c->config;
     return new PDO(
       "{$config['db_driver']}:host={$config['db_host']};dbname={$config['db_name']}",
       $config['db_user'],
@@ -25,4 +25,8 @@ $c['db'] = function ($c) {
     );
 };
 
-var_dump($c->db);
+$app->get('/', function () {
+    echo 'Home';
+});
+
+$app->run();

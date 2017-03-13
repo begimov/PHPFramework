@@ -8,6 +8,11 @@ class Container implements \ArrayAccess
 
     private $cache = array();
 
+    public function __construct(array $items = [])
+    {
+        $this->items = $items;
+    }
+
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {

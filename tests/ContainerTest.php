@@ -5,6 +5,20 @@ use App\Container;
 
 final class ContainerTest extends TestCase
 {
+    public function testInitialState()
+    {
+        $c = new Container([
+            'initial' => function () {
+                return 1;
+            },
+            'test' => function () {
+              return 0;
+            }
+        ]);
+        $this->assertEquals(1, $c['initial']);
+        $this->assertEquals(0, $c->test);
+    }
+
     public function testOffsetSet()
     {
         $c = new Container;
@@ -14,6 +28,12 @@ final class ContainerTest extends TestCase
 
         $this->assertEquals(1, $c['test']);
         $this->assertEquals(1, $c->test);
+
+        $c->offsetSet(null, function () {
+            return 2;
+        });
+
+        $this->assertEquals(2, $c[0]);
     }
 
     public function testOffsetExists()

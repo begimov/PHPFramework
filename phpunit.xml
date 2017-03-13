@@ -1,11 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-  <phpunit bootstrap="vendor/autoload.php"
-    colors="true"
-    verbose="true"
-    stopOnFailure="false">
-    <testsuites>
-      <testsuite name="Test suite">
-        <directory>tests</directory>
-      </testsuite>
-    </testsuites>
+<phpunit bootstrap="vendor/autoload.php"
+  colors="true"
+  verbose="true"
+  stopOnFailure="false">
+  <testsuites>
+    <testsuite name="Test suite">
+      <directory>tests</directory>
+    </testsuite>
+  </testsuites>
+  <logging>
+    <log type="coverage-html" target="./log/report" charset="UTF-8"
+      yui="true" highlight="true"
+      lowUpperBound="50" highLowerBound="80"/>
+    </logging>
+    <filter>
+        <whitelist>
+            <directory suffix=".php">./app/</directory>
+        </whitelist>
+    </filter>
   </phpunit>
