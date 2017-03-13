@@ -14,6 +14,8 @@ final class RouterTest extends TestCase
           return 1;
         });
 
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+
         $this->assertEquals(function () {
           return 1;
         }, $r->getResponse());

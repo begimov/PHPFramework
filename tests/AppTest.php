@@ -23,6 +23,8 @@ final class AppTest extends TestCase
 
         $r->setPath('/test1');
 
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+
         $this->assertEquals('test1', $r->getResponse());
     }
 
@@ -35,6 +37,8 @@ final class AppTest extends TestCase
         $r->addRoute('/', function () {
             return 1;
         });
+
+        $_SERVER['REQUEST_METHOD'] = 'GET';
 
         $app->run();
 
