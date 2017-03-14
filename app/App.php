@@ -68,6 +68,11 @@ class App
 
     private function process($func)
     {
+        if (is_array($func)) {
+            return !is_object($func[0])
+                ? call_user_func([new $func[0], $func[1]])
+                : call_user_func($func);
+        }
         return $func();
     }
 }

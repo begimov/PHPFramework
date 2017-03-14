@@ -107,4 +107,14 @@ final class AppTest extends TestCase
         $_SERVER['REQUEST_METHOD'] = 'POST';
         $this->assertEquals('methodNotAllowedHandler', $this->app->run());
     }
+
+    public function testProcess()
+    {
+        $stub = $this->createMock(App::class);
+        $stub->method('getContainer')
+             ->willReturn('test');
+        $this->app->get('/', [$stub, 'getContainer']);
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $this->assertEquals('test', $this->app->run());
+    }
 }
