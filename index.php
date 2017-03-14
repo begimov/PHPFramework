@@ -35,6 +35,6 @@ $c['db'] = function ($c) {
     );
 };
 
-$app->get('/', [new App\Controllers\HomeController($c->db), 'show']);
+$app->get('/', [App\Controllers\HomeController::class, 'show']);
 
 $app->run();

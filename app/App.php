@@ -4,6 +4,7 @@ namespace App;
 
 use App\Exceptions\RouteNotFoundException;
 use App\Exceptions\MethodNotAllowedException;
+use App\Response;
 
 class App
 {
@@ -14,6 +15,9 @@ class App
         $this->container = new Container([
           'router' => function () {
               return new Router;
+          },
+          'response' => function () {
+              return new Response;
           }
         ]);
     }
@@ -63,16 +67,26 @@ class App
                 return;
             }
         }
-        return $this->process($res);
+        return $this->respond($this->process($res));
     }
 
     private function process($func)
     {
+        $response = $this->container->response;
         if (is_array($func)) {
             return !is_object($func[0])
-                ? call_user_func([new $func[0], $func[1]])
-                : call_user_func($func);
+                ? call_user_func([new $func[0], $func[1]], $response)
+                : call_user_func($func, $response);
         }
-        return $func();
+        return $func($response);
+    }
+
+    private function respond($res)
+    {
+        if (!($res instanceof Response)) {
+            echo $res;
+            return;
+        }
+        echo $res->getBody();
     }
 }

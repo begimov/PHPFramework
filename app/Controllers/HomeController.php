@@ -4,15 +4,15 @@ namespace App\Controllers;
 
 class HomeController
 {
-    private $db;
+    // private $db;
+    //
+    // public function __construct(\PDO $db)
+    // {
+    //     $this->db = $db;
+    // }
 
-    public function __construct(\PDO $db)
+    public function show($res)
     {
-        $this->db = $db;
-    }
-
-    public function show()
-    {
-        return 1;
+      return $res->setBody('Home');
     }
 }

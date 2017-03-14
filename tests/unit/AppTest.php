@@ -3,6 +3,7 @@
 use PHPUnit\Framework\TestCase;
 use App\App;
 use App\Container;
+use App\Response;
 use App\Exceptions\RouteNotFoundException;
 use App\Exceptions\MethodNotAllowedException;
 
@@ -70,10 +71,11 @@ final class AppTest extends TestCase
     {
         $_SERVER['PATH_INFO'] = '/';
         $this->router->addRoute('/', function () {
-            return 1;
+            return 'Test';
         });
         $_SERVER['REQUEST_METHOD'] = 'GET';
-        $this->assertEquals(1, $this->app->run());
+        $this->expectOutputString('Test');
+        $this->app->run();
 
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['PATH_INFO'] = '/nontest';
@@ -92,7 +94,8 @@ final class AppTest extends TestCase
                 return 'routeNotFoundHandler';
             };
         };
-        $this->assertEquals('routeNotFoundHandler', $this->app->run());
+        $this->expectOutputString('routeNotFoundHandler');
+        $this->app->run();
     }
 
     public function testRunMethodNotAllowedException()
@@ -105,7 +108,8 @@ final class AppTest extends TestCase
         };
         $this->router->addRoute('/', 1);
         $_SERVER['REQUEST_METHOD'] = 'POST';
-        $this->assertEquals('methodNotAllowedHandler', $this->app->run());
+        $this->expectOutputString('methodNotAllowedHandler');
+        $this->app->run();
     }
 
     public function testProcess()
@@ -115,6 +119,18 @@ final class AppTest extends TestCase
              ->willReturn('test');
         $this->app->get('/', [$stub, 'getContainer']);
         $_SERVER['REQUEST_METHOD'] = 'GET';
-        $this->assertEquals('test', $this->app->run());
+        $this->expectOutputString('test');
+        $this->app->run();
+    }
+
+    public function testRespond()
+    {
+        $this->app->get('/', function () {
+          $res = new Response;
+          return $res->setBody('test');
+        });
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $this->expectOutputString('test');
+        $this->app->run();
     }
 }
