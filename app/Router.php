@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Exceptions\RouteNotFoundException;
 use App\Exceptions\MethodNotAllowedException;
 
 class Router
@@ -14,21 +15,23 @@ class Router
 
     public function setPath($path = '/')
     {
-      $this->path = $path;
+        $this->path = $path;
     }
 
     public function addRoute($uri, $cb, array $methods =['GET'])
     {
-      $this->routes[$uri] = $cb;
-      $this->methods[$uri] = $methods;
+        $this->routes[$uri] = $cb;
+        $this->methods[$uri] = $methods;
     }
 
     public function getResponse()
     {
-      if (!in_array($_SERVER['REQUEST_METHOD'], $this->methods[$this->path])) {
-        throw new MethodNotAllowedException("Method Not Allowed", 1);
-
-      }
-      return $this->routes[$this->path];
+        if (!isset($this->routes[$this->path])) {
+            throw new RouteNotFoundException("No route for '{$this->path}' path");
+        }
+        if (!in_array($_SERVER['REQUEST_METHOD'], $this->methods[$this->path])) {
+            throw new MethodNotAllowedException;
+        }
+        return $this->routes[$this->path];
     }
 }

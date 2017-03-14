@@ -2,6 +2,9 @@
 
 namespace App;
 
+use App\Exceptions\RouteNotFoundException;
+use App\Exceptions\MethodNotAllowedException;
+
 class App
 {
     private $container;
@@ -34,16 +37,32 @@ class App
 
     public function map($uri, $cb, array $methods = ['GET'])
     {
-      $r = $this->container->router;
-      $r->addRoute($uri, $cb, $methods);
+        $r = $this->container->router;
+        $r->addRoute($uri, $cb, $methods);
     }
 
     public function run()
     {
         $r = $this->container->router;
-        $r->setPath($_SERVER['PATH_INFO'] ?: '/');
+        $r->setPath(isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '/');
 
-        $res = $r->getResponse();
+        try {
+            $res = $r->getResponse();
+        } catch (RouteNotFoundException $e) {
+            if ($this->container->has('routeNotFoundHandler')) {
+                $res = $this->container->routeNotFoundHandler;
+            } else {
+                // TODO: msg to developer about configuring handler?
+                return;
+            }
+        } catch (MethodNotAllowedException $e) {
+            if ($this->container->has('methodNotAllowedHandler')) {
+                $res = $this->container->methodNotAllowedHandler;
+            } else {
+                // TODO: msg to developer about configuring handler?
+                return;
+            }
+        }
         return $this->process($res);
     }
 

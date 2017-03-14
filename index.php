@@ -6,6 +6,16 @@ $app = new App\App;
 
 $c = $app->getContainer();
 
+$c['routeNotFoundHandler'] = function ($c) {
+    // TODO:404 status code and page
+    die('routeNotFoundHandler');
+};
+
+$c['methodNotAllowedHandler'] = function ($c) {
+    // TODO: redirect to home page?
+    die('methodNotAllowedHandler');
+};
+
 $c['config'] = function ($c) {
     return [
     'db_driver' => 'mysql',
@@ -25,16 +35,6 @@ $c['db'] = function ($c) {
     );
 };
 
-$app->get('/', function () {
-    echo 'Home';
-});
-
-$app->post('/signup', function () {
-    echo 'Sign Up';
-});
-
-$app->map('/users', function () {
-    echo 'Users';
-}, ['GET', 'POST']);
+$app->get('/', ['controller', 'method']);
 
 $app->run();
