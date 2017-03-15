@@ -87,6 +87,19 @@ class App
             echo $res;
             return;
         }
+
+        header(sprintf(
+          "{$_SERVER["SERVER_PROTOCOL"]} %s %s",
+          $res->getStatusCode(),
+          ''
+        ));
+
+        if (!empty($res->getHeaders())) {
+            foreach ($res->getHeaders() as $key => $value) {
+                header("{$key}: {$value}");
+            }
+        }
+
         echo $res->getBody();
     }
 }

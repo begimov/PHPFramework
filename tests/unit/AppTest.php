@@ -123,14 +123,31 @@ final class AppTest extends TestCase
         $this->app->run();
     }
 
+    /**
+     * @runInSeparateProcess
+     */
     public function testRespond()
     {
-        $this->app->get('/', function () {
-          $res = new Response;
-          return $res->setBody('test');
+        $this->app->get('/', function ($res) {
+            return $res->setBody('');
         });
         $_SERVER['REQUEST_METHOD'] = 'GET';
-        $this->expectOutputString('test');
+        $_SERVER["SERVER_PROTOCOL"] = 'HTTP/1.1';
         $this->app->run();
+        $this->assertFalse(!!$this->getActualOutput());
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testRespondWithHeaders()
+    {
+        $this->app->get('/', function ($res) {
+            return $res->setBody('')->withHeader('Content-Type', 'text/plain');
+        });
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $_SERVER["SERVER_PROTOCOL"] = 'HTTP/1.1';
+        $this->app->run();
+        $this->assertFalse(!!$this->getActualOutput());
     }
 }

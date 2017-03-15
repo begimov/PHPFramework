@@ -7,8 +7,11 @@ $app = new App\App;
 $c = $app->getContainer();
 
 $c['routeNotFoundHandler'] = function ($c) {
-    // TODO:404 status code and page
-    die('routeNotFoundHandler');
+    return function ($res) {
+      // TODO: Inject a view in setBody()
+        return $res->setBody('<h1>Page not found</h1>')->withStatus(404);
+        // ->withHeader('Content-Type', 'text/plain');
+    };
 };
 
 $c['methodNotAllowedHandler'] = function ($c) {
@@ -36,5 +39,6 @@ $c['db'] = function ($c) {
 };
 
 $app->get('/', [App\Controllers\HomeController::class, 'show']);
+$app->get('/users', [App\Controllers\UserController::class, 'show']);
 
 $app->run();
