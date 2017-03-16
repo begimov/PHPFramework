@@ -39,6 +39,6 @@ $c['db'] = function ($c) {
 };
 
 $app->get('/', [App\Controllers\HomeController::class, 'show']);
-$app->get('/users', [App\Controllers\UserController::class, 'show']);
+$app->get('/users', [new App\Controllers\UserController($c->db), 'show']);
 
 $app->run();
